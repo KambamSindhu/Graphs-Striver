@@ -1,0 +1,58 @@
+// User function Template for Java
+
+class Solution {
+    static int numProvinces(ArrayList<ArrayList<Integer>> adj, int V) {
+    
+    int cnt=0;
+      int[] vis=new int[adj.size()];
+      ArrayList<ArrayList<Integer>> adjLs=new ArrayList<>();
+      
+      //Changing to Adjacency list
+           for (int i = 0; i < V; i++) {
+            adjLs.add(new ArrayList<>());
+        }
+      for(int i=0;i<V;i++)
+      {
+          for(int j=0;j<V;j++)
+          {
+              if(i!=j && adj.get(i).get(j)==1)
+              {
+                  adjLs.get(i).add(j);
+                  adjLs.get(j).add(i);
+              }
+          }
+      }
+      
+    for(int i=0;i<adj.size();i++)
+    {
+        if(vis[i]==0)
+        {
+            bfs(i,vis,adjLs);
+            cnt++;
+        }
+    }
+    return cnt;
+        
+    }
+    public static void bfs(int src, int[] vis,ArrayList<ArrayList<Integer>> adj)
+    {
+      Queue<Integer> q=new LinkedList<>();
+  
+            q.add(src);
+            vis[src]=1;
+            while(q.size()>0)
+            {
+                int rem=q.remove();
+                
+                for(int it:adj.get(rem))
+                {
+                    if(vis[it]==0)
+                    {
+                        vis[it]=1;
+                        q.add(it);
+                    }
+                }
+                
+            }
+    }
+};
