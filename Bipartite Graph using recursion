@@ -1,0 +1,59 @@
+class Solution {
+    public boolean isBipartite(int V, int[][] edges) {
+     
+    ArrayList<ArrayList<Integer>> adj=new ArrayList<>();
+    for(int i=0;i<V;i++)
+    {
+        adj.add(new ArrayList<Integer>());
+    }
+    int n=edges.length;
+    int m=edges[0].length;
+  
+    for(int i=0;i<n;i++) {
+    int u = edges[i][0];
+    int v = edges[i][1];
+    adj.get(u).add(v);
+    adj.get(v).add(u); // undirected graph
+}
+
+    int colour[]=new int[V];
+    Arrays.fill(colour,-1);
+    
+    for(int i=0;i<V;i++)
+    {
+        if(colour[i]==-1)
+        {
+            if(!bfs(i,colour,adj))
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+    
+    }
+    public boolean bfs(int start,int color[], ArrayList<ArrayList<Integer>> adj)
+    {
+        color[start]=0;
+        Queue<Integer> q=new LinkedList<>();
+        q.add(start);
+        while(q.size()>0)
+        {
+            int rem=q.remove();
+            for(Integer x:adj.get(rem))
+            {
+                if(color[x]==-1)
+                {
+                    color[x]=1-color[rem];
+                    q.add(x);
+                }
+                else if(color[x]==color[rem])
+                {
+                    return false;
+                }
+                }
+            }
+            return true;
+        }
+    
+}
