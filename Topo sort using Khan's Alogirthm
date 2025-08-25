@@ -1,0 +1,53 @@
+class Solution {
+    public static ArrayList<Integer> topoSort(int V, int[][] edges) {
+        ArrayList<ArrayList<Integer>> adj=new ArrayList<>();
+    
+    ArrayList<Integer> ans=new ArrayList<>();
+    int indegree[]=new int[V];
+    for(int i=0;i<V;i++)
+    {
+        adj.add(new ArrayList<>());
+    }
+    
+    for(int i=0;i<edges.length;i++)
+    {
+       adj.get(edges[i][0]).add(edges[i][1]);
+       
+       int node=edges[i][1];
+       indegree[node]=indegree[node]+1;
+    
+    }
+    
+    Queue<Integer> q=new LinkedList<>();
+    // All all the nodes whose indegree is zero into the queue
+    
+    for(int i=0;i<V;i++)
+    {
+        if(indegree[i]==0)
+        {
+            q.add(i);
+          
+        }
+    }
+    
+    while(!q.isEmpty())
+    {
+        int cNode=q.remove();
+        ans.add(cNode);
+        
+        for(int it:adj.get(cNode))
+        {
+            
+                 indegree[it]=indegree[it]-1;
+         if(indegree[it]==0)
+            {
+                q.add(it);
+            }
+            
+        }
+    }
+   
+   return ans;
+        
+    }
+}
