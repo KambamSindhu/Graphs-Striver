@@ -1,0 +1,53 @@
+class Solution {
+    public boolean isCyclic(int V, int[][] edges) {
+        
+        int n=edges.length;
+        if (n == 0) return false;
+        ArrayList<ArrayList<Integer>> adj=new ArrayList<>();
+        int cnt=0;
+        int indegree[]=new int[V];
+        Queue<Integer> q=new LinkedList<>();
+        for(int i=0;i<V;i++)
+        {
+            adj.add(new ArrayList<>());
+        }
+         
+        for(int i=0;i<n;i++)
+        {
+            int u=edges[i][0];
+            int v=edges[i][1];
+            
+             
+            adj.get(u).add(v);
+            //calulate indegree
+            indegree[v]+=1;
+        }
+        
+        for(int i=0;i<V;i++)
+        {
+            if(indegree[i]==0)
+            {
+                q.add(i);
+            }
+        }
+      
+      while(!q.isEmpty())
+      {
+          int rem=q.remove();
+          cnt++;
+          for(int it:adj.get(rem))
+          {
+              indegree[it]-=1;
+              if(indegree[it]==0)
+              {
+                  q.add(it);
+              }
+          }
+      }
+     if (cnt == V) {
+    return false;  // no cycle
+} else {
+    return true;   // cycle exists
+}
+    }
+}
