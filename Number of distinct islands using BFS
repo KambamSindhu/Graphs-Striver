@@ -1,0 +1,65 @@
+// User function Template for Java
+
+class Solution {
+
+    class Pair{
+        int r;
+        int c;
+        Pair(int r,int c)
+        {
+            this.r=r;
+            this.c=c;
+        }
+    }
+    int countDistinctIslands(int[][] grid) {
+       
+       int n=grid.length;
+       int m=grid[0].length;
+       boolean vis[][]=new boolean[n][m];
+        HashSet<ArrayList<String>> hash = new HashSet<>();
+       for(int i=0;i<n;i++)
+       {
+           for(int j=0;j<m;j++)
+           {
+               if(!vis[i][j] && grid[i][j]==1)
+               {
+                   ArrayList<String> list=new ArrayList<String>();
+                   bfs(i,j,vis,hash,grid,i,j,list);
+                   hash.add(list);
+               }
+           }
+       }
+       return hash.size();
+    }
+    public  void bfs(int r,int c,boolean vis[][],HashSet<ArrayList<String>> hash,
+    int[][] grid,int row0,int col0,ArrayList<String> list)
+    {
+        vis[r][c]=true;
+        Queue<Pair> q=new LinkedList<>();
+        q.add(new Pair(r,c));
+       
+         int n=grid.length;
+       int m=grid[0].length;
+         list.add((r - row0) + "," + (c - col0));
+        
+        int[] delrow = {-1, 0, 1, 0};
+int[] delcol = {0, 1, 0, -1};
+        while(!q.isEmpty())
+        {
+            Pair rem=q.remove();
+            
+            for(int i=0;i<4;i++)
+            {
+                int nrow=rem.r+delrow[i];
+                int ncol=rem.c+delcol[i];
+                if(nrow>=0 && nrow<n && ncol>=0 && ncol<m && !vis[nrow][ncol] && 
+                grid[nrow][ncol]==1)
+                {
+                    vis[nrow][ncol]=true;
+                    q.add(new Pair(nrow,ncol));
+                   list.add((nrow - row0) + "," + (ncol - col0));
+                }
+            }
+        }
+    }
+}
