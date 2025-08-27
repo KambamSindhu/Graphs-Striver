@@ -1,0 +1,65 @@
+class Solution {
+    public String findOrder(String[] words) {
+       
+       ArrayList<ArrayList<Integer>> adj=new ArrayList<>();
+          int indegree[] = new int[26];
+          boolean seen[] = new boolean[26];
+          for (int i = 0; i < 26; i++) {
+    adj.add(new ArrayList<>());
+}
+
+       // Mark all characters as seen
+        for (String w : words) {
+            for (char c : w.toCharArray()) {
+                seen[c - 'a'] = true;
+            }
+        }
+       for(int x=0;x<words.length-1;x++)
+       {
+           String s1=words[x];
+           String s2=words[x+1];
+             // invalid case: longer word comes before its prefix
+            if (s1.length() > s2.length() && s1.startsWith(s2)) {
+                return "";
+            }
+           for(int i=0;i<Math.min(s1.length(), s2.length());i++)
+           {
+               if(s1.charAt(i)!=s2.charAt(i))
+               {
+                   adj.get(s1.charAt(i)-'a').add(s2.charAt(i)-'a');
+                  indegree[s2.charAt(i) - 'a']++;
+                  
+                   break;
+               }
+           }
+           
+       }
+      Queue<Integer> q=new ArrayDeque<>();
+       for(int i=0;i<adj.size();i++)
+       {
+           if(seen[i] && indegree[i]==0)
+           {
+               q.add(i);
+           }
+       }
+       String ans="";
+        while(!q.isEmpty())
+        {
+            int rem=q.remove();
+           ans = ans + (char)(rem + 'a');
+            for(int it:adj.get(rem))
+            {
+                indegree[it]--;
+                if(indegree[it]==0)
+                {
+                    q.add(it);
+                }
+            }
+        }
+         // ✅ Cycle detection
+        int countSeen = 0;
+        for (boolean b : seen) if (b) countSeen++;
+        if (ans.length() < countSeen) return "";
+        return ans;
+    }
+}
