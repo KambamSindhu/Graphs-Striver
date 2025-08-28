@@ -1,0 +1,23 @@
+class Solution {
+    public int[] shortestPath(ArrayList<ArrayList<Integer>> adj, int src) {
+        int n = adj.size();
+        int[] dist = new int[n];
+        Arrays.fill(dist, -1); // default unreachable
+
+        ArrayDeque<Integer> q = new ArrayDeque<>();
+        q.add(src);
+        dist[src] = 0;
+
+        while (!q.isEmpty()) {
+            int curr = q.poll();
+
+            for (int nei : adj.get(curr)) {
+                if (dist[nei] == -1) { // visit only once
+                    dist[nei] = dist[curr] + 1;
+                    q.add(nei);
+                }
+            }
+        }
+        return dist;
+    }
+}
