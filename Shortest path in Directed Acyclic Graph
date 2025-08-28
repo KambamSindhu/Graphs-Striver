@@ -1,0 +1,64 @@
+// User function Template for Java
+import java.util.*;
+
+class Solution {
+    static class Pair {
+        int v, wt;
+        Pair(int v, int wt) {
+            this.v = v;
+            this.wt = wt;
+        }
+    }
+
+    public int[] shortestPath(int V, int E, int[][] edges) {
+        // Step 0: Build adjacency list
+        ArrayList<ArrayList<Pair>> adj = new ArrayList<>();
+        for (int i = 0; i < V; i++) adj.add(new ArrayList<>());
+
+        for (int i = 0; i < E; i++) {
+            int u = edges[i][0];
+            int v = edges[i][1];
+            int wt = edges[i][2];
+            adj.get(u).add(new Pair(v, wt));
+        }
+
+        // Step 1: Do Topological Sort
+        Stack<Integer> st = new Stack<>();
+        boolean[] vis = new boolean[V];
+        for (int i = 0; i < V; i++) {
+            if (!vis[i]) topoSort(i, adj, vis, st);
+        }
+
+        // Step 2: Initialize distances
+        int[] dist = new int[V];
+        Arrays.fill(dist, (int)1e9);  // infinity
+        dist[0] = 0;   // source is assumed to be 0
+
+        // Step 3: Relax edges in Topo order
+        while (!st.isEmpty()) {
+            int u = st.pop();
+            
+                for (Pair p : adj.get(u)) {
+                    if (dist[u] + p.wt < dist[p.v]) {
+                        dist[p.v] = dist[u] + p.wt;
+                    }
+              
+            }
+        }
+
+        // Step 4: Convert INF to -1 for unreachable nodes
+        for (int i = 0; i < V; i++) {
+            if (dist[i] == (int)1e9) dist[i] = -1;
+        }
+
+        return dist;
+    }
+
+    private void topoSort(int node, ArrayList<ArrayList<Pair>> adj, boolean[] vis, Stack<Integer> st) {
+        vis[node] = true;
+        for (Pair p : adj.get(node)) {
+            if (!vis[p.v]) topoSort(p.v, adj, vis, st);
+        }
+        st.push(node);
+    }
+}
