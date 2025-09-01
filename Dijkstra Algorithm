@@ -1,0 +1,57 @@
+class Solution {
+    public int[] dijkstra(int V, int[][] edges, int src) {
+        
+        ArrayList<ArrayList<Pair>> adj=new ArrayList<>();
+        PriorityQueue<Pair> pq=new PriorityQueue<>(
+            (x,y)->{
+                return x.first-y.first;
+            });
+        
+        
+        for(int i=0;i<V;i++)
+        {
+            adj.add(new ArrayList<>());
+        }
+        
+        for(int i=0;i<edges.length;i++)
+        {
+            int u=edges[i][0];
+            int v=edges[i][1];
+            int wt=edges[i][2];
+            
+            adj.get(u).add(new Pair(v,wt));
+            adj.get(v).add(new Pair(u,wt));
+        }
+        
+        int dis[]=new int[V];
+        Arrays.fill(dis,(int)(1e9));
+        pq.add(new Pair(0,src));
+        dis[src]=0;
+        while(!pq.isEmpty())
+        {
+            Pair pair=pq.remove();
+            int dist=pair.first;
+            int node=pair.second;
+            for(Pair p:adj.get(node))
+            {
+                if(p.second+dist<dis[p.first])
+                {
+                    dis[p.first]=p.second+dist;
+                    pq.add(new Pair(dis[p.first],p.first));
+                }
+            }
+        }
+        
+        return dis;
+    }
+}
+
+class Pair{
+    int first;
+    int second;
+    Pair(int first,int second)
+    {
+        this.first=first;
+        this.second=second;
+    }
+}
