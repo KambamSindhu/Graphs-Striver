@@ -1,0 +1,85 @@
+class Solution {
+    public List<Integer> shortestPath(int n, int m, int edges[][]) {
+        
+        ArrayList<ArrayList<Pair>> adj=new ArrayList<>();
+        for(int i=0;i<=n;i++)
+        {
+            adj.add(new ArrayList<>());
+        }
+        
+        for(int i=0;i<m;i++)
+        {
+            int u=edges[i][0];
+            int v=edges[i][1];
+            int wt=edges[i][2];
+            
+            adj.get(u).add(new Pair(v,wt));
+            adj.get(v).add(new Pair(u,wt));
+        }
+        
+        int dis[]=new int[n+1];
+        int parent[]=new int[n+1];
+        
+        Arrays.fill(dis,(int)1e9);
+        dis[1]=0;
+        for(int i=0;i<=n;i++)
+        {
+            parent[i]=i;
+        }
+        
+        PriorityQueue<Pair> pq=new PriorityQueue<>((x,y)->{
+            return x.first-y.first;
+        });
+        
+        pq.add(new Pair(0,1));
+        
+        while(!pq.isEmpty())
+        {
+            Pair curr=pq.remove();
+            int dist=curr.first;
+            int node=curr.second;
+            
+            for(Pair p:adj.get(node))
+            {
+                int newNode=p.first;
+                int wt=p.second;
+                if(dis[newNode]>wt+dist)
+                {
+                    dis[newNode]=wt+dist;
+                    pq.add(new Pair(dis[newNode],newNode));
+                    parent[newNode]=node;
+                }
+            }
+        }
+               List<Integer> path = new ArrayList<>();
+        if (dis[n] == (int) 1e9) {
+            path.add(-1);
+            return path;
+        }
+
+        // Reconstruct path
+        int node = n;
+        while (parent[node] != node) {
+            path.add(node);
+            node = parent[node];
+        }
+        path.add(1); // add source
+
+        Collections.reverse(path);
+
+        // Put distance in front
+        path.add(0, dis[n]);
+
+        return path;
+
+    }
+}
+class Pair {
+    int first;
+    int second;
+    Pair(int first,int second)
+    {
+        this.first=first;
+        this.second=second;
+    }
+}
