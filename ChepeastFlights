@@ -1,0 +1,71 @@
+class Solution {
+
+    public int CheapestFLight(int n, int flights[][], int src, int dst, int k) {
+        
+        ArrayList<ArrayList<Edge>> adj=new ArrayList<>();
+        
+        for(int i=0;i<n;i++)
+        {
+            adj.add(new ArrayList<>());
+        }
+        
+        for(int i=0;i<flights.length;i++)
+        {
+            int u=flights[i][0];
+            int v=flights[i][1];
+            int wt=flights[i][2];
+            
+            adj.get(u).add(new Edge(v,wt));
+        }
+        
+        Queue<Pair> q=new ArrayDeque<>();
+        
+        q.add(new Pair(0,src,0));
+        //queue contains steps,src,distance
+        int dis[]=new int[n];
+        Arrays.fill(dis,(int)1e9);
+        dis[src]=0;
+        
+        while(!q.isEmpty())
+        {
+            Pair curr=q.remove();
+            int steps=curr.first;
+            int node=curr.second;
+            int dist=curr.third;
+            for(Edge p:adj.get(node))
+            {
+                if(dis[p.v]>p.wt+dist && k>=steps)
+                {
+                dis[p.v]=p.wt+dist;
+                q.add(new Pair(steps+1,p.v,p.wt+dist));
+                }
+            }
+            
+        }
+        if(dis[dst]==(int)1e9)
+        {
+            return -1;
+        }
+        
+        return dis[dst];
+    }
+}
+class Edge{
+    int v;
+    int wt;
+    Edge(int v,int wt)
+    {
+        this.v=v;
+        this.wt=wt;
+    }
+}
+class Pair{
+    int first;
+    int second;
+    int third;
+    Pair(int first,int second,int third){
+        this.first=first;
+        this.second=second;
+        this.third=third;
+    }
+}
