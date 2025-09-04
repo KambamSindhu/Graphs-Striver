@@ -1,0 +1,83 @@
+import java.util.*;
+
+class Solution {
+
+    static int countPaths(int n, List<List<Integer>> roads) {
+
+        // Build adjacency list
+        ArrayList<ArrayList<Edge>> adj = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            adj.add(new ArrayList<>());
+        }
+        for (List<Integer> road : roads) {
+            int u = road.get(0);
+            int v = road.get(1);
+            int wt = road.get(2);
+
+            adj.get(u).add(new Edge(v, wt));
+            adj.get(v).add(new Edge(u, wt));
+        }
+
+        // Min-heap for Dijkstra: (distance, node)
+        PriorityQueue<State> pq = new PriorityQueue<>(
+            (a, b) -> Long.compare(a.dist, b.dist)
+        );
+
+        int mod = (int)1e9 + 7;
+        long INF = Long.MAX_VALUE / 2; // safe infinity
+
+        long[] dis = new long[n];
+        Arrays.fill(dis, INF);
+
+        int[] ways = new int[n]; // count paths
+        ways[0] = 1;
+        dis[0] = 0;
+
+        pq.add(new State(0, 0));
+
+        while (!pq.isEmpty()) {
+            State curr = pq.poll();
+            long d = curr.dist;
+            int node = curr.node;
+
+            if (d > dis[node]) continue; // outdated entry
+
+            for (Edge e : adj.get(node)) {
+                int nei = e.to;
+                long newDist = d + e.wt;
+
+                if (newDist < dis[nei]) {
+                    dis[nei] = newDist;
+                    ways[nei] = ways[node];
+                    pq.add(new State(newDist, nei));
+                } 
+                else if (newDist == dis[nei]) {
+                    ways[nei] = (int)((ways[nei] + (long)ways[node]) % mod);
+                }
+            }
+        }
+
+        if (dis[n-1] == INF) {
+            return 0; // unreachable → 0 paths
+        }
+
+        return ways[n-1] % mod;
+    }
+}
+
+class Edge {
+    int to, wt;
+    Edge(int to, int wt) {
+        this.to = to;
+        this.wt = wt;
+    }
+}
+
+class State {
+    long dist;
+    int node;
+    State(long dist, int node) {
+        this.dist = dist;
+        this.node = node;
+    }
+}
