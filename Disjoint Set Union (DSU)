@@ -145,3 +145,71 @@ class DisjointSet{
         }
     }
 }
+==========================================USING SIZE
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Disjoint ds = new Disjoint(7);
+
+        ds.union(1,2);
+        ds.union(2,3);
+        ds.union(4,5);
+        ds.union(6,7);
+        ds.union(5,6);
+
+        if (ds.ultimateParent(3) == ds.ultimateParent(7)) {
+            System.out.println("Same component");
+        } else {
+            System.out.println("Not Same component");
+        }
+
+        ds.union(3,7);
+
+        if (ds.ultimateParent(3) == ds.ultimateParent(7)) {
+            System.out.println("Same component");
+        } else {
+            System.out.println("Not Same component");
+        }
+    }
+}
+
+class Disjoint {
+    private int[] size;
+    private int[] parent;
+
+    public Disjoint(int n) {
+        size = new int[n+1];
+        parent = new int[n+1];
+        for (int i = 1; i <= n; i++) { // ✅ 1-based indexing
+            size[i] = 1;
+            parent[i] = i;
+        }
+    }
+
+    // Path Compression
+    public int ultimateParent(int node) {
+        if (node == parent[node]) {
+            return node;
+        }
+        parent[node] = ultimateParent(parent[node]);
+        return parent[node];
+    }
+
+    // Union by Size
+    public void union(int u, int v) {
+        int upu = ultimateParent(u);
+        int upv = ultimateParent(v);
+
+        if (upu == upv) return;
+
+        if (size[upu] < size[upv]) {
+            parent[upu] = upv;   // ✅ directly attach
+            size[upv] += size[upu];
+        } else {
+            parent[upv] = upu;   // ✅ directly attach
+            size[upu] += size[upv];
+        }
+    }
+}
+
