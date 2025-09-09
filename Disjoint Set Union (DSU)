@@ -1,0 +1,76 @@
+
+*************************************************Union-Find with Path Compression + Union by Rank******************************
+import java.util.*;
+import java.io.*;
+public class Main
+{
+	public static void main(String[] args) {
+		DisjointSet d=new DisjointSet(7);
+		d.unionofNode(1,2);
+		d.unionofNode(2,3);
+		d.unionofNode(4,5);
+		d.unionofNode(6,7);
+		d.unionofNode(5,6);
+		// finding if they are of same component
+		if(d.findUltimateParent(3)==d.findUltimateParent(7))
+		{
+		    System.out.println("Same component");
+		}else{
+		     System.out.println("Not Same component");
+		}
+		d.unionofNode(3,7);
+		
+		// finding if they are of same component
+		if(d.findUltimateParent(3)==d.findUltimateParent(7))
+		{
+		    System.out.println("Same component");
+		}else{
+		     System.out.println("Not Same component");
+		}
+		
+	}
+}
+class DisjointSet{
+    ArrayList<Integer> rank =new ArrayList<>();
+    ArrayList<Integer> parent =new ArrayList<>();
+    
+    public DisjointSet(int n)
+    {
+        for(int i=0;i<=n;i++)
+        {
+            rank.add(0);
+            parent.add(i);
+        }
+        
+    }
+    public int findUltimateParent(int node)
+    {
+        if(node==parent.get(node))
+        {
+            return node;
+        }
+        
+        int ulp=findUltimateParent(parent.get(node));
+        parent.set(node,ulp);
+        return parent.get(node);
+    }
+    public void unionofNode(int u,int v)
+    {
+        int UlpU=findUltimateParent(u);
+        int Ulpv=findUltimateParent(v);
+        if(UlpU== Ulpv) return;
+        if(rank.get(UlpU) < rank.get(Ulpv))
+        {
+            parent.set(UlpU,Ulpv);
+        }
+        else if(rank.get(Ulpv) < rank.get(UlpU))
+        {
+            parent.set(Ulpv,UlpU);
+        }
+        else{
+            parent.set(Ulpv,UlpU);
+            rank.set(UlpU,rank.get(UlpU)+1);
+        }
+    }
+    
+}
