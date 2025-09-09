@@ -74,3 +74,74 @@ class DisjointSet{
     }
     
 }
+/////////////////////////////////Using Arrays
+import java.util.*;
+import java.io.*;
+public class Main
+{
+     public static void main(String[] args) {
+        DisjointSet ds = new DisjointSet(7);
+
+        ds.unionOfNode(1,2);
+        ds.unionOfNode(2,3);
+        ds.unionOfNode(4,5);
+        ds.unionOfNode(6,7);
+        ds.unionOfNode(5,6);
+
+        if(ds.ultimateParentNode(3) == ds.ultimateParentNode(7)) {
+            System.out.println("Same component");
+        } else {
+            System.out.println("Not Same component");
+        }
+
+        ds.unionOfNode(3,7);
+
+        if(ds.ultimateParentNode(3) == ds.ultimateParentNode(7)) {
+            System.out.println("Same component");
+        } else {
+            System.out.println("Not Same component");
+        }
+    }
+}
+
+class DisjointSet{
+     private int[] parent;
+    private int[] rank;
+    public DisjointSet(int n)
+    {
+     parent=new int[n+1];
+         rank=new int[n+1];
+        for(int i=0;i<=n;i++)
+        {
+            parent[i]=i;
+            rank[i]=0;
+        }
+    }
+    
+    public int ultimateParentNode(int node)
+    {
+        if(node==parent[node])
+        {
+            return node;
+        }
+         parent[node]=ultimateParentNode(parent[node]);
+        return parent[node];
+    }
+    public void unionOfNode(int u,int v)
+    {
+        int upu=ultimateParentNode(u);
+        int upv=ultimateParentNode(v);
+        if(upu==upv) return;
+        if(rank[upu]<rank[upv])
+        {
+            parent[upu]=upv;
+        } else if(rank[upv]<rank[upu])
+        {
+            parent[upv]=upu;
+        }
+        else{
+            parent[upu]=upv;
+            rank[upv]=rank[upv]+1;
+        }
+    }
+}
