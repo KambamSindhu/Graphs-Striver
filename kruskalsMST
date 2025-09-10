@@ -1,0 +1,98 @@
+// User function Template for Java
+class Edge implements Comparable<Edge>{
+    int src;
+    int nei;
+    int wt;
+    public Edge(int src,int nei,int wt)
+    {
+        this.src=src;
+        this.wt=wt;
+        this.nei=nei;
+    }
+    public int compareTo(Edge e)
+    {
+        return this.wt-e.wt;
+    }
+}
+
+
+class Solution {
+    static int kruskalsMST(int V, int[][] edges) {
+
+        DisJoinSet d=new DisJoinSet(V);
+        ArrayList<Edge> list=new ArrayList<>();
+        int wt=0;
+        for(int i=0;i<edges.length;i++)
+        {
+           
+                int node=edges[i][0];
+                int nei=edges[i][1];
+                int w=edges[i][2];
+                list.add(new Edge(node,nei,w));
+            
+        }
+        Collections.sort(list);
+        for(Edge e: list)
+        {
+             int node=e.src;
+                int nei=e.nei;
+                int cwt=e.wt;
+                if(d.UltimateParent(node)!=d.UltimateParent(nei))
+                {
+                   d.Union(node,nei);
+                   wt+=cwt;
+                }
+        }
+        return wt;
+    }
+}
+
+class DisJoinSet{
+    private int parent[] ;
+    private int size[];
+    public DisJoinSet(int n)
+    {
+         parent=new int[n];
+         size=new int[n];
+         for(int i=0;i<n;i++)
+         {
+             parent[i]=i;
+             size[i]=1;
+         }
+    }
+    
+    public int UltimateParent(int node)
+    {
+        if(node==parent[node])
+        {
+            return node;
+        }
+        
+        parent[node]=UltimateParent(parent[node]);
+        
+        return parent[node];
+    }
+    
+    public void Union(int u,int v)
+    {
+        int upu=UltimateParent(u);
+        int upv=UltimateParent(v);
+        
+        if(upu==upv) return;
+        
+        if(size[upu] < size[upv] )
+        {
+            parent[upu]=upv;
+        }
+        else if(size[upu] > size[upv])
+        {
+            parent[upv]=upu;
+        }
+        else
+        {
+            parent[upu]=upv;
+            size[upv]+=size[upu];
+        }
+        
+    }
+}
