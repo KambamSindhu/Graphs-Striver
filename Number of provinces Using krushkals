@@ -1,0 +1,73 @@
+// User function Template for Java
+
+class Solution {
+    static int numProvinces(ArrayList<ArrayList<Integer>> adj, int V) {
+        DisjointSet d= new DisjointSet(V);
+        
+        for(int i=0;i<adj.size();i++)
+        {
+            for(int j=0;j<adj.get(i).size();j++)
+            {
+                if(adj.get(i).get(j)==1 && i != j)
+                {
+                    d.union(i,j);
+                }
+            }
+        }
+        int cnt=0;
+        for(int i=0;i<V;i++)
+        {
+            if(d.parent[i]==i)
+            {
+                cnt++;
+            }
+        }
+    
+        return cnt;
+    }
+};a
+
+class DisjointSet{
+    int parent[];
+    int size[];
+    public DisjointSet(int n){
+        parent=new int[n];
+        size=new int[n];
+        
+        for(int i=0;i<n;i++)
+        {
+            parent[i]=i;
+            size[i]=1;
+        }
+    }
+    
+    public int UltimateParent(int node)
+    {
+        if(node==parent[node])
+        {
+            return node;
+        }
+        parent[node]=UltimateParent(parent[node]);
+        
+        return parent[node];
+    }
+    
+    public void union(int u,int v)
+    {
+        int upu=UltimateParent(u);
+        int upv=UltimateParent(v);
+        if(upu==upv) 
+        {
+            return;
+        }
+        if(size[upu]<size[upv])
+        {
+            parent[upu]=upv;
+            size[upv]+=size[upu];
+        }
+        else{
+            parent[upv]=upu;
+            size[upu]+=size[upv];
+        }
+    }
+}
