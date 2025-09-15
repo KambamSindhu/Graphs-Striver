@@ -1,0 +1,61 @@
+class Solution {
+       private int time=0;
+     private boolean isBridgeFound;
+    public boolean isBridge(int V, int[][] edges, int c, int d) {
+        // code here
+        ArrayList<ArrayList<Integer>> adj=new ArrayList<>();
+        
+        for(int i=0;i<V;i++)
+        {
+            adj.add(new ArrayList<>());
+        }
+        for(int i=0;i<edges.length;i++)
+        {
+            int u=edges[i][0];
+            int v=edges[i][1];
+            adj.get(v).add(u);
+            adj.get(u).add(v);
+        }
+        
+        int vis[]=new int[V];
+        int timer[]=new int[V];
+        int lowest[]=new int[V];
+    
+       for (int i = 0; i < V; i++) {
+    if (vis[i] == 0) {
+        dfs(i, -1, c, d, adj, vis, timer, lowest);
+    }
+}
+
+        return isBridgeFound;
+    }
+ 
+    public void dfs(int node,int parent,int u,int v,ArrayList<ArrayList<Integer>> adj,
+    int vis[],int timer[],int lowest[])
+    {
+        vis[node]=1;
+        timer[node]=lowest[node]=time;
+        time++;
+        for(Integer adjNode : adj.get(node))
+        {
+            if (adjNode == parent) continue;
+            if(vis[adjNode]==0)
+            {
+               dfs(adjNode,node,u,v,adj,vis,timer,lowest);
+                
+                lowest[node]=Math.min(lowest[node],lowest[adjNode]);
+                if(lowest[adjNode]>timer[node] )
+                {
+                    if ((node == u && adjNode == v) || (node == v && adjNode == u)) {
+                        isBridgeFound = true;
+                    }
+                   
+                }
+            }
+            else{
+                 lowest[node] = Math.min(lowest[node], timer[adjNode]);
+            }
+        }
+        
+    }
+}
